@@ -12,6 +12,10 @@ y = torch.randn(N, D_out)
 w1 = torch.randn(D_in, H)
 w2 = torch.randn(H, D_out)
 
+# hold loss over iterations for plotting
+xs = []
+ys = []
+
 learning_rate = 1e-6
 for t in range(500):
 	# Forward pass: compute predicted y
@@ -23,6 +27,10 @@ for t in range(500):
 	loss = (y_pred - y).pow(2).sum().item()
 	print(t, loss)
 	
+	# append to plot lists
+	xs.append(t)
+	ys.append(loss)
+
 	# backprop to compute gradients of w1 and w2 with respect to loss
 	grad_y_pred = 2.0  * (y_pred - y)
 	grad_w2 = h_relu.t().mm(grad_y_pred)
@@ -35,4 +43,12 @@ for t in range(500):
 	w1 -= learning_rate * grad_w1
 	w2 -= learning_rate * grad_w2
 	
-print("cool")
+print("plotting")
+
+import matplotlib.pyplot as plt
+plt.plot(xs, ys)
+plt.title("loss over iterations")
+plt.xlabel("iterations")
+plt.ylabel("Loss")
+plt.savefig("loss_over_iters.png")
+	
